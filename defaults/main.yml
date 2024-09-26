@@ -1,0 +1,19 @@
+---
+# defaults file for ansible-role-qemu-cluster
+qemu_cluster_libvirt_pool_dir: /var/lib/machines
+qemu_cluster_networks:
+  - name: wan
+    bridge: br0
+    interfaces: 
+      - eth0
+    address: 192.168.1.1
+    netmask: 255.255.255.0
+    gateway: 192.168.1.255
+
+qemu_cluster_machines:
+  - name: guest
+    ram_mb: 4096
+    vcpus: 1
+    networks:
+      - wan
+    
