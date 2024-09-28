@@ -1,11 +1,13 @@
-{% for iface in qemu_cluster_bridge_interfaces %}
+{% for iface in interfaces %}
 iface {{ iface }} inet manual
 {% endfor %}
 
-auto {{ qemu_cluster_bridge_name }}
-iface {{ qemu_cluster_bridge_name }} inet static
-	bridge_ports {{ qemu_cluster_bridge_interfaces|join(' ') }}
-		address {{ qemu_cluster_bridge_address }}
-		broadcast {{ qemu_cluster_bridge_broadcast }}
-		netmask {{ qemu_cluster_bridge_netmask }}
-		gateway {{ qemu_cluster_bridge_gateway }}
+auto {{ name }}
+iface {{ name }} inet {% if use_dhcp %}dhcp{% else %}static{% endif %}
+        bridge_ports {{ interfaces|join(' ') }}
+{% if not use_dhcp %}
+        address {{ address }}
+        broadcast {{ broadcast }}
+        netmask {{ netmask }}
+        gateway {{ gateway }}
+{% endif %}

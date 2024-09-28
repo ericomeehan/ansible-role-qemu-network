@@ -1,5 +1,5 @@
 ---
-# tasks file for ansible-role-qemu-cluster
+# tasks file for ansible-role-qemu-network
 - name: Update apt repositories
   apt:
     update_cache: true
@@ -19,27 +19,27 @@
     path: /etc/network/interfaces
     block: "{{ lookup('template', 'interfaces.j2') }}"
     marker: ""
-  loop: {{ qemu_cluster_networks }}
+  loop: {{ qemu_network_networks }}
 
 - name: Define QEMU network
   community.libvirt.virt:
     command: define
     xml: "{{ lookup('template', 'bridge-network.xml.j2') }}"
     autostart: true
-  loop: {{ qemu_cluster_networks }}
+  loop: {{ qemu_network_networks }}
 
 - name: Start QEMU network
   community.libvirt.virt:
     name: {{ name }}
     state: running
-  loop: {{ qemu_cluster_networks }}
+  loop: {{ qemu_network_networks }}
 
-- name: Deploy QEMU virtual machines
+- name: Define QEMU virtual machines
   community.libvirt.virt:
     command: define
     xml: "{{ lookup('template', 'virtual-machine.xml.j2') }}"
     autostart: true
-  loop: {{ qemu_cluster_machines }}
+  loop: {{ qemu_network_machines }}
 
 - name: Start QEMU virtual machines
   community.libvirt.virt:

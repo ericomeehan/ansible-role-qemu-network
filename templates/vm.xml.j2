@@ -9,12 +9,14 @@
   <cpu mode='host-model' check='none'/>
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
+    {% for disk in disks %}
     <disk type='file' device='disk'>
-      <driver name='qemu' type='qcow2'/>
-      <source file='{{ qemu_cluster_libvirt_pool_dir }}/{{ name }}.qcow2'/>
-      <target dev='vda' bus='virtio'/>
+      <driver name='qemu' type='{{ type }}'/>
+      <source file='{{ qemu_network_libvirt_pool_dir }}/{{ filename }}.{{ type }}'/>
+      <target dev='{{ target_dev }}' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
     </disk>
+    {% endfor %}
     {% for network in networks %}
     <interface type='network'>
       <source network='{{ network }}'/>
