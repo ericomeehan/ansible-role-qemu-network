@@ -1,0 +1,48 @@
+---
+- name: Install dependencies
+  apt:
+    name:
+      - qemu-system
+      - libvirt-daemon-system
+      - python3-libvirt
+      - python3-lxml
+    state: present
+
+- name: Create virtual disks
+  libvirt_volume:
+    name: {{ name }}
+    size: 
+
+- name: Define the VM
+  libvirt_domain:
+    name: {{ name }}
+    state: present
+    ram: {{ ram }}
+    vcpus: {{ vcpus }}
+    disk_pool: default
+    cdrom:
+      - path: "/path/to/debian.iso"
+    disks:
+      - size: 20
+        storage_vol_name: myvm-disk
+    interfaces: {{ interfaces }}
+      - type: network
+        source: default
+        model: virtio
+    boot_order: {{ boot_order }}
+      - cdrom
+      - disk
+      - network
+      - hostdev
+    features: {{ features }}
+      acpi: 1
+      apic: 1
+      pae: 1
+  register: vm_config
+
+- name: Ensure the VM is running
+  libvirt_domain:
+    name: myvm
+    state: started
+  when: vm_config.changed
+

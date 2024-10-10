@@ -1,5 +1,34 @@
 ---
 # defaults file for ansible-role-qemu-network
+name: demo
+ram: 2048
+vcpus: 2
+disks:
+  - size: 4
+    storage_vol_name: demo-vda
+interfaces:
+  - type: network
+    source: default
+    model: virtio
+boot_order:
+  - cdrom
+  - disk
+  - network
+  - hostdev
+features:
+  acpi: 1
+  apic: 1
+  pae: 1
+
+
+
+
+
+
+
+
+
+
 qemu_network_libvirt_pool_dir: /var/lib/machines
 qemu_network_networks:
   - name: wan

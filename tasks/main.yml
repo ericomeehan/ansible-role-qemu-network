@@ -1,9 +1,5 @@
 ---
 # tasks file for ansible-role-qemu-network
-- name: Update apt repositories
-  apt:
-    update_cache: true
-
 - name: Install QEMU and libvirt dependencies
   apt:
     state: present
@@ -12,6 +8,10 @@
       - libvirt-daemon-system
       - python3-libvirt
       - python3-lxml
+
+
+
+
 
 - name: Create virtual bridge interfaces
   blockinfile:
@@ -33,6 +33,15 @@
     name: {{ name }}
     state: running
   loop: {{ qemu_network_networks }}
+
+- name: Create QEMU disks
+  libvirt_volume:
+    name: {{ name }}
+    source: /var/lib/machines/{{ from }}
+    format: qcow2
+    state: present
+    size: {{ size }}
+  loop: {{ qemu_network_disks }}
 
 - name: Define QEMU virtual machines
   community.libvirt.virt:
